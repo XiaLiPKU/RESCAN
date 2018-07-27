@@ -68,7 +68,7 @@ class ConvRNN(nn.Module):
         if h is None:
             h = F.tanh(self.conv_x(x))
         else:
-            z = F.tanh(self.conv_x(x) + self.conv_h(h))
+            h = F.tanh(self.conv_x(x) + self.conv_h(h))
 
         h = self.relu(self.se(h))
         return h, h
