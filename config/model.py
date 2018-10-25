@@ -151,7 +151,7 @@ RecUnit = {
 }[settings.uint]
 
 
-class DetailNet(nn.Module):
+class RESCAN(nn.Module):
     def __init__(self):
         super().__init__()
         channel = settings.channel
@@ -193,7 +193,7 @@ class DetailNet(nn.Module):
 if __name__ == '__main__':
     ts = torch.Tensor(16, 3, 64, 64)
     vr = Variable(ts)
-    net = DetailNet()
+    net = RESCAN()
     print(net)
     oups = net(vr)
     for oup in oups:

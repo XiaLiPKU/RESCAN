@@ -14,8 +14,8 @@ from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
 import settings
-from dataset import TrainValDataset, TestDataset
-from model import DetailNet
+from dataset import TrainValDataset
+from model import RESCAN 
 from cal_ssim import SSIM
 
 logger = settings.logger
@@ -38,7 +38,7 @@ class Session:
         logger.info('set log dir as %s' % settings.log_dir)
         logger.info('set model dir as %s' % settings.model_dir)
 
-        self.net = DetailNet().cuda()
+        self.net = RESCAN().cuda()
         self.crit = MSELoss().cuda()
         self.ssim = SSIM().cuda()
 
@@ -68,18 +68,13 @@ class Session:
         ]
         logger.info(name + '--' + ' '.join(outputs))
 
-    def get_dataloader(self, dataset_name, train_mode=True):
-        dataset = {
-            True: TrainValDataset,
-            False: TestDataset,
-        }[train_mode](dataset_name)
-        self.dataloaders[dataset_name] = \
+    def get_dataloader(self, dataset_name):
+        dataset = TrainValDataset(dataset_name)
+        if not dataset_name in self.dataloaders:
+            self.dataloaders[dataset_name] = \
                     DataLoader(dataset, batch_size=self.batch_size, 
                             shuffle=True, num_workers=self.num_workers, drop_last=True)
-        if train_mode:
-            return iter(self.dataloaders[dataset_name])
-        else:
-            return self.dataloaders[dataset_name]
+        return iter(self.dataloaders[dataset_name])
 
     def save_checkpoints(self, name):
         ckp_path = os.path.join(self.model_dir, name)
@@ -93,8 +88,10 @@ class Session:
     def load_checkpoints(self, name):
         ckp_path = os.path.join(self.model_dir, name)
         try:
+            logger.info('Load checkpoint %s' % ckp_path)
             obj = torch.load(ckp_path)
         except FileNotFoundError:
+            logger.info('No checkpoint %s!!' % ckp_path)
             return
         self.net.load_state_dict(obj['net'])
         self.opt.load_state_dict(obj['opt'])
@@ -102,27 +99,31 @@ class Session:
         self.sche.last_epoch = self.step
 
     def inf_batch(self, name, batch):
-        O, B = batch['O'], batch['B']
-        O, B = O.cuda(), B.cuda()
-        O, B = Variable(O), Variable(B)
+        O, B = batch['O'].cuda(), batch['B'].cuda()
+        O, B = Variable(O, requires_grad=False), Variable(B, requires_grad=False)
         R = O - B
 
         O_Rs = self.net(O)
         loss_list = [self.crit(O_R, R) for O_R in O_Rs]
         ssim_list = [self.ssim(O - O_R, O - R) for O_R in O_Rs]
 
-        loss = sum(loss_list)
+        if name == 'train':
+            self.net.zero_grad()
+            sum(loss_list).backward()
+            self.opt.step()
+
         losses = {
-            'loss%d' % i: loss.data[0]
+            'loss%d' % i: loss.item()
             for i, loss in enumerate(loss_list)
         }
         ssimes = {
-            'ssim%d' % i: ssim.data[0]
+            'ssim%d' % i: ssim.item()
             for i, ssim in enumerate(ssim_list)
         }
         losses.update(ssimes)
+        self.write(name, losses)
 
-        return O - O_Rs[-1], loss, losses
+        return O - O_Rs[-1]
 
     def save_image(self, name, img_lists):
         data, pred, label = img_lists
@@ -162,21 +163,23 @@ def run_train_val(ckp_name='latest'):
 
     while sess.step < 20000:
         sess.sche.step()
-
         sess.net.train()
-        sess.net.zero_grad()
 
-        batch_t = next(dt_train)
-        pred_t, loss_t, losses_t = sess.inf_batch('train', batch_t)
-        sess.write('train', losses_t)
-        loss_t.backward()
-        sess.opt.step()
+        try:
+            batch_t = next(dt_train)
+        except StopIteration:
+            dt_train = sess.get_dataloader('train')
+            batch_t = next(dt_train)
+        pred_t = sess.inf_batch('train', batch_t)
 
         if sess.step % 4 == 0:
             sess.net.eval()
-            batch_v = next(dt_val)
-            pred_v, loss_v, losses_v = sess.inf_batch('val', batch_v)
-            sess.write('val', losses_v)
+            try:
+                batch_v = next(dt_val)
+            except StopIteration:
+                dt_val = sess.get_dataloader('val')
+                batch_v = next(dt_val)
+            pred_v = sess.inf_batch('val', batch_v)
 
         if sess.step % int(sess.save_steps / 16) == 0:
             sess.save_checkpoints('latest')
@@ -191,38 +194,10 @@ def run_train_val(ckp_name='latest'):
         sess.step += 1
 
 
-def run_test(ckp_name):
-    sess = Session()
-    sess.net.eval()
-    sess.load_checkpoints(ckp_name)
-
-    dt = sess.get_dataloader('test', train_mode=False)
-
-    all_num = 0
-    all_losses = {}
-    for i, batch in enumerate(dt):
-        pred, loss, losses = sess.inf_batch('test', batch)
-        batch_size = pred.size(0)
-        all_num += batch_size
-        for key, val in losses.items():
-            if i == 0:
-                all_losses[key] = 0.
-            all_losses[key] += val * batch_size
-            logger.info('batch %d mse %s: %f' % (i, key, val))
-
-    for key, val in all_losses.items():
-        logger.info('total mse %s: %f' % (key, val / all_num))
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--action', default='train')
     parser.add_argument('-m', '--model', default='latest')
 
     args = parser.parse_args(sys.argv[1:])
-    
-    if args.action == 'train':
-        run_train_val(args.model)
-    elif args.action == 'test':
-        run_test(args.model)
+    run_train_val(args.model)
 

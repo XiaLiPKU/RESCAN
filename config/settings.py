@@ -5,8 +5,8 @@ channel = 24
 stage_num = 4
 depth = 7 # >=3
 use_se = True 
-uint = 'RNN' # ['Conv', 'RNN', 'GRU', 'LSTM']
-frame = 'Add' # ['Add', 'Full']
+uint = 'GRU' # ['Conv', 'RNN', 'GRU', 'LSTM']
+frame = 'Full' # ['Add', 'Full']
 
 aug_data = False # Set as False for fair comparison
 
@@ -14,7 +14,7 @@ batch_size = 64
 patch_size = 64
 lr = 5e-3
 
-data_dir = 'path/to/dataset/folder'
+data_dir = 'path/to/data/folder'
 log_dir = '../logdir'
 show_dir = '../showdir'
 model_dir = '../models'
@@ -25,7 +25,7 @@ save_steps = 400
 
 num_workers = 8
 num_GPU = 1
-device_id = 3
+device_id = 0
 
 logger = logging.getLogger('train')
 logger.setLevel(logging.INFO)

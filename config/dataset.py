@@ -93,14 +93,14 @@ class TestDataset(Dataset):
         file_name = self.mat_files[idx % self.file_num]
         img_file = os.path.join(self.root_dir, file_name)
         img_pair = cv2.imread(img_file).astype(np.float32) / 255
-
-        O = np.transpose(img_pair, (2, 0, 1))
-        sample = {'O': O}
-
-        return sample
-
         h, ww, c = img_pair.shape
         w = int(ww / 2)
+
+        O = np.transpose(img_pair[:, w:], (2, 0, 1))
+        B = np.transpose(img_pair[:, :w], (2, 0, 1))
+        sample = {'O': O, 'B': B}
+
+        return sample
 
 
 class ShowDataset(Dataset):
@@ -136,12 +136,19 @@ if __name__ == '__main__':
         smp = dt[i]
         for k, v in smp.items():
             print(k, v.shape, v.dtype, v.mean())
-        print()
 
-    print('ShowDataset')
-    dt = DerainDataset('test')
+    print()
+    dt = TestDataset('test')
+    print('TestDataset')
     for i in range(10):
         smp = dt[i]
         for k, v in smp.items():
             print(k, v.shape, v.dtype, v.mean())
-        print()
+
+    print()
+    print('ShowDataset')
+    dt = ShowDataset('test')
+    for i in range(10):
+        smp = dt[i]
+        for k, v in smp.items():
+            print(k, v.shape, v.dtype, v.mean())

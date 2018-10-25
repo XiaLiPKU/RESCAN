@@ -11,9 +11,9 @@ Rain streaks can severely degrade the visibility, which causes many current comp
 
 ## Prerequisite
 - Python>=3.6
-- Pytorch>=3.1.0
+- Pytorch>=4.1.0
 - Opencv>=3.1.0
-- tensorboard-pytorch
+- tensorboardX
 
 ## Project Structure
 - config: contains all codes
@@ -43,14 +43,26 @@ Moreover, there should be three folders 'train', 'val', 'test' in the dataset fo
 After download the datasets, don't forget to transform the format!
 
 ## Train, Test and Show
-    python main.py -a train
-    python main.py -a test
+    python train.py
+    python eval.py
     python show.py
 
 ## Scripts
 - explore.sh: Show the predicted images in browser
 - config/tensorboard.sh: Open the tensorboard server
 - config/clean.sh: Clear all the training records in the folder
+
+## Cite
+If you use our code, please refer this repo.
+If you publish your paper that refer to our paper, please cite:
+@inproceedings{li2018recurrent,
+    title={Recurrent Squeeze-and-Excitation Context Aggregation Net for Single Image Deraining},
+    author={Li, Xia and Wu, Jianlong and Lin, Zhouchen and Liu, Hong and Zha, Hongbin},
+    booktitle={European Conference on Computer Vision},
+    pages={262--277},
+    year={2018},
+    organization={Springer}
+}
 
 
   [1]: http://robotics.pkusz.edu.cn/person/inreadings/%E6%9D%8E%E5%A4%8F.2017.%E7%A1%95%E5%A3%AB/
