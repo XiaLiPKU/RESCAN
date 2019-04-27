@@ -86,5 +86,5 @@ If you publish your paper that refer to our paper, please cite:
   [10]: https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s
   
 ## Recent Works
-  [SPANet from Steve Wong](https://github.com/stevewongv/SPANet)
-  [/HeavyRainRemoval from Ruoteng Li](https://github.com/liruoteng/HeavyRainRemoval)
+    [SPANet from Steve Wong](https://github.com/stevewongv/SPANet)
+    [/HeavyRainRemoval from Ruoteng Li](https://github.com/liruoteng/HeavyRainRemoval)
