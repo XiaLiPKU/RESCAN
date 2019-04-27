@@ -88,8 +88,8 @@ class Session:
     def load_checkpoints(self, name):
         ckp_path = os.path.join(self.model_dir, name)
         try:
-            logger.info('Load checkpoint %s' % ckp_path)
             obj = torch.load(ckp_path)
+            logger.info('Load checkpoint %s' % ckp_path)
         except FileNotFoundError:
             logger.info('No checkpoint %s!!' % ckp_path)
             return

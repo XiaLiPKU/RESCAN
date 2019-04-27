@@ -124,9 +124,12 @@ class ShowDataset(Dataset):
 
         #O = np.transpose(img_pair, (2, 0, 1))
         O = np.transpose(img_pair[:, w:], (2, 0, 1))
-        sample = {'O': O}
+        sample = {'O': O, 'idx': idx}
 
         return sample
+
+    def get_name(self, idx):
+        return self.img_files[idx % self.file_num].split('.')[0]
 
 
 if __name__ == '__main__':

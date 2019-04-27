@@ -37,14 +37,15 @@ class Session:
         logger.info('set model dir as %s' % settings.model_dir)
 
         self.net = RESCAN().cuda()
-        self.dataloaders = {}
+        self.dataset = None 
+        self.dataloader = None 
 
     def get_dataloader(self, dataset_name):
-        dataset = ShowDataset(dataset_name)
-        self.dataloaders[dataset_name] = \
-                    DataLoader(dataset, batch_size=1, 
+        self.dataset = ShowDataset(dataset_name)
+        self.dataloader = \
+                    DataLoader(self.dataset, batch_size=1, 
                             shuffle=False, num_workers=1)
-        return self.dataloaders[dataset_name]
+        return self.dataloader
 
     def load_checkpoints(self, name):
         ckp_path = os.path.join(self.model_dir, name)
@@ -73,7 +74,7 @@ class Session:
             img = np.transpose(img, (1, 2, 0))
             h, w, c = img.shape
 
-            img_file = os.path.join(self.show_dir, '%02d_%d.jpg' % (No, i))
+            img_file = os.path.join(self.show_dir, '%s_%d.png' % (No, i))
             cv2.imwrite(img_file, img)
 
 
@@ -87,7 +88,8 @@ def run_show(ckp_name):
     for i, batch in enumerate(dt):
         logger.info(i)
         imgs = sess.inf_batch('test', batch)
-        sess.save_image(i, imgs)
+        No = sess.dataset.get_name(batch['idx'][0])
+        sess.save_image(No, imgs)
 
 
 if __name__ == '__main__':

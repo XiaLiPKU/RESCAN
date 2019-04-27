@@ -137,7 +137,7 @@ class ConvLSTM(nn.Module):
             o = F.sigmoid(self.conv_xo(x) + self.conv_ho(h))
             j = F.tanh(self.conv_xj(x) + self.conv_hj(h))
             c = f * c + i * j
-            h = o * c
+            h = o * F.tanh(c)
 
         h = self.relu(self.se(h))
         return h, [h, c]
