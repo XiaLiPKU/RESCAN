@@ -84,3 +84,7 @@ If you publish your paper that refer to our paper, please cite:
   [8]: hongliu@pku.edu.cn
   [9]: http://www.icst.pku.edu.cn/struct/Projects/joint_rain_removal.html
   [10]: https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s
+  
+## Recent Works
+  [SPANet from Steve Wong](https://github.com/stevewongv/SPANet)
+  [/HeavyRainRemoval from Ruoteng Li](https://github.com/liruoteng/HeavyRainRemoval)
