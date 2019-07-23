@@ -1,11 +1,11 @@
 # RESCAN: Recurrent Squeeze-and-Excitation Context Aggregation Net
 
-Xia Li, Jianlong Wu, [Zhouchen Lin][2], [Hong Liu][3], [Hongbin Zha][4]<br>
+[Xia Li][1], [Jianlong Wu][2], [Zhouchen Lin][3], [Hong Liu][4], [Hongbin Zha][5]<br>
 
 Key Laboratory of Machine Perception, Shenzhen Graduate School, Peking University<br>
 Key Laboratory of Machine Perception (MOE), School of EECS, Peking University<br>
 Cooperative Medianet Innovation Center, Shanghai Jiao Tong University<br>
-{[ethanlee][5], [jlwu1992][6], [zlin][7], [hongliu][8]}@pku.edu.cn, zha@cis.pku.edu.cn
+{[ethanlee][6], [jlwu1992][7], [zlin][8], [hongliu][9]}@pku.edu.cn, zha@cis.pku.edu.cn
 
 Rain streaks can severely degrade the visibility, which causes many current computer vision algorithms fail to work. So it is necessary to remove the rain from images. We propose a novel deep network architecture based on deep convolutional and recurrent neural networks for single image deraining. As contextual information is very important for rain removal, we first adopt the dilated convolutional neural network to acquire large receptive field. To better fit the rain removal task, we also modify the network. In heavy rain, rain streaks have various directions and shapes, which can be regarded as the accumulation of multiple rain streak layers. We assign different alpha-values to various rain streak layers according to the intensity and transparency by incorporating the squeeze-and-excitation block. Since rain streak layers overlap with each other, it is not easy to remove the rain in one stage. So we further decompose the rain removal into multiple stages. Recurrent neural network is incorporated to preserve the useful information in previous stages and benefit the rain removal in later stages. We conduct extensive experiments on both synthetic and real-world datasets. Our proposed method outperforms the state-of-the-art approaches under all evaluation metrics.
 
@@ -37,8 +37,8 @@ Hold every experiment in an independent folder, and assign a long name to it.
 We recommend list the important parameters in the folder name, for example: RESCAN.ConvRNN.Full.d_7.c_24(d: depth, c: channel).
 
 ## Default Dataset settings
-Rain100H: [http://www.icst.pku.edu.cn/struct/Projects/joint_rain_removal.html][9]<br>
-Rain800: [https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s][10]
+Rain100H: [http://www.icst.pku.edu.cn/struct/Projects/joint_rain_removal.html][10]<br>
+Rain800: [https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s][11]
 
 We concatenate the two images(B and O) together as default inputs. If you want to change this setting, just modify config/dataset.py.
 Moreover, there should be three folders 'train', 'val', 'test' in the dataset folder.
@@ -74,16 +74,17 @@ If you publish your paper that refer to our paper, please cite:
         organization={Springer}  
     }
 
-
-  [2]: http://cis.pku.edu.cn/faculty/vision/zlin/zlin.htm
-  [3]: http://robotics.pkusz.edu.cn/team/leader/
-  [4]: http://cis.pku.edu.cn/vision/Visual&Robot/people/zha/
-  [5]: ethanlee@pku.edu.cn
-  [6]: jlwu1992@pku.edu.cn
-  [7]: zlin@pku.edu.cn
-  [8]: hongliu@pku.edu.cn
-  [9]: http://www.icst.pku.edu.cn/struct/Projects/joint_rain_removal.html
-  [10]: https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s
+  [1]: http://xialipku.github.io
+  [2]: http://jlwu1992.github.io
+  [3]: http://cis.pku.edu.cn/faculty/vision/zlin/zlin.htm
+  [4]: http://robotics.pkusz.edu.cn/team/leader/
+  [5]: http://cis.pku.edu.cn/vision/Visual&Robot/people/zha/
+  [6]: ethanlee@pku.edu.cn
+  [7]: jlwu1992@pku.edu.cn
+  [8]: zlin@pku.edu.cn
+  [9]: hongliu@pku.edu.cn
+  [10]: http://www.icst.pku.edu.cn/struct/Projects/joint_rain_removal.html
+  [11]: https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s
   
 ## Recent Works
 - [SPANet](https://github.com/stevewongv/SPANet) from Tianyu Wang
