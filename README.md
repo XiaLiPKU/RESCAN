@@ -85,5 +85,6 @@ If you publish your paper that refer to our paper, please cite:
   [11]: https://drive.google.com/drive/folders/0Bw2e6Q0nQQvGbi1xV1Yxd09rY2s
   
 ## Recent Works
+- [SDSEN](https://github.com/prismformore/SDSEN)
 - [SPANet](https://github.com/stevewongv/SPANet) from Tianyu Wang
 - [HeavyRainRemoval](https://github.com/liruoteng/HeavyRainRemoval) from Ruoteng Li
